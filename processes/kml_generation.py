@@ -1,15 +1,21 @@
-import simplekml 
+import simplekml
+
 def do_kml_generation():
-    global data 
+    global program_data, hotspot_data
     try:
         kml = simplekml.Kml()
-        for  i in range(len(data["hotspots"])):
-            kml.newpoint(name =f"Hotspot {i}", coords=[data["hotspots"][i]])
-            kml.newpoint(name="Fire source", coords = [data["source"]["coordinates"]], description=data["source"]["description"])
-        kml.save(data["kml_file_path"])
-        print(f"[o] kml file saved to -> {data["kml_file_path"]}")
-    except:
-        print("[x] Error occured generating kml file")
 
+        for i, hotspot in enumerate(hotspot_data.get("hotspots", [])):
+            kml.newpoint(name=f"Hotspot {i}", coords=[hotspot])
 
-    
+        source_coords = hotspot_data.get("source", {}).get("coordinates")
+        source_desc = hotspot_data.get("source", {}).get("description", "")
+
+        if source_coords:
+            kml.newpoint(name="Fire Source", coords=[source_coords], description=source_desc)
+
+        kml.save(program_data["kml_file_path"])
+        print(f'[o] KML file saved to -> {program_data["kml_file_path"]}')
+
+    except Exception as e:
+        print(f'[x] Error occurred generating KML file: {e}')

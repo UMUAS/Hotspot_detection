@@ -1,11 +1,5 @@
-
 def do_ir_detection():
-    global data 
-    global save_state
-    global current_coordinates 
-    global print_hotspots 
-    global is_valid_index
-    global get_valid_coordinate
+    global hotspot_data, save_state, current_coordinates, print_hotspots, is_valid_index, get_valid_coordinate
     '''
     === IR Detection ===
     Options:
@@ -19,64 +13,57 @@ def do_ir_detection():
 
     while True:
         print(do_ir_detection.__doc__)
-
         option = input('Choose option: ').lower()
+
         while option not in options:
             option = input('Invalid input! Try again: ').lower()
 
-        if(option == 'exit'):
-            print('Exiting IR detection.')
+        if option == 'exit':
+            print('[o] Exiting IR detection.')
             save_state()
-            print("program state saved to JSON file")
+            print("[o] Program state saved to JSON file")
             break
 
-       
-
-        if(option == 'add'):
-            data["hotspots"].push(current_coordinates)
+        elif option == 'add':
+            hotspot_data["hotspots"].append(current_coordinates)
             save_state()
             print("[o] New hotspot added and program state saved to JSON file")
-            
 
-        elif(option == 'rem'):
+        elif option == 'rem':
             print_hotspots()
-            print('Remove a hotspot by its index in the list. To cancel, type "cancel".')
+            print('[i] Remove a hotspot by its index in the list. To cancel, type "cancel".')
 
-            indexStr = input('Choose option:').lower()
-            while (not indexStr.isnumeric() and indexStr != "cancel") or (indexStr.isnumeric() and is_valid_index(int(indexStr))):
-                indexStr = input('Invalid input! Try again: ').lower()
+            index_str = input('Choose index: ').lower()
+            while (not index_str.isnumeric() and index_str != "cancel") or \
+                  (index_str.isnumeric() and not is_valid_index(int(index_str))):
+                index_str = input('Invalid input! Try again: ').lower()
 
-            if(indexStr == 'cancel'):
+            if index_str == 'cancel':
                 continue
             else:
-                hotspot_index = int(indexStr)
-                data["hotspots"].pop(hotspot_index)
-            save_state()
-            print("[o] Hotspot removed and program state saved to JSON file")
+                hotspot_index = int(index_str)
+                hotspot_data["hotspots"].pop(hotspot_index)
+                save_state()
+                print("[o] Hotspot removed and program state saved to JSON file")
 
-            
-
-        elif(option == 'set'):
+        elif option == 'set':
             print_hotspots()
             print("Modify Hotspot coordinates by its index in the list. To cancel, type 'cancel'.")
 
-            indexStr = input ("Choose hotspot: ").lower()
-            while (not indexStr.isnumeric() and indexStr != "cancel") or (indexStr.isnumeric() and is_valid_index(int(indexStr))):
-                indexStr = input('Invalid input! Try again: ').lower()
+            index_str = input("Choose hotspot: ").lower()
+            while (not index_str.isnumeric() and index_str != "cancel") or (index_str.isnumeric() and not is_valid_index(int(index_str))):
+                index_str = input('Invalid input! Try again: ').lower()
 
-            if(indexStr == "cancel"):
+            if index_str == "cancel":
                 continue
             else:
-                hotspot_index = int(indexStr)
+                hotspot_index = int(index_str)
                 latitude = get_valid_coordinate("Enter latitude (-90 to 90): ", -90, 90)
                 longitude = get_valid_coordinate("Enter longitude (-180 to 180): ", -180, 180)
-                data["hotspots"][hotspot_index] = (longitude,latitude)
-            save_state()
-            print("[o] Hotspot data modified and program state saved to JSON file")
+                hotspot_data["hotspots"][hotspot_index] = (longitude, latitude)
+                save_state()
+                print("[o] Hotspot data modified and program state saved to JSON file")
 
-        
-        elif(option == 'list'):
+        elif option == 'list':
             print_hotspots()
-
-
 
